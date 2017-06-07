@@ -115,7 +115,7 @@
                       success:(void (^)(NSURLSessionDataTask * _Nonnull, id _Nullable))success
                       failure:(void (^)(NSURLSessionDataTask * _Nullable, NSError * _Nonnull))failure
 {
-
+//生成一个task
     NSURLSessionDataTask *dataTask = [self dataTaskWithHTTPMethod:@"GET"
                                                         URLString:URLString
                                                        parameters:parameters
@@ -123,6 +123,8 @@
                                                  downloadProgress:downloadProgress
                                                           success:success
                                                           failure:failure];
+
+    //开始网络请求
 
     [dataTask resume];
 
@@ -264,6 +266,12 @@
         if (failure) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
+            
+//////////////////////////////
+/*        
+ self.completionQueue用途：比如有自己的一套数据加解密的解析模式，所以我们回调回来的数据并不想是主线程，我们可以设置这个Queue,在分线程进行解析数据，然后自己再调回到主线程去刷新UI
+ */
+            
             dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
                 failure(nil, serializationError);
             });
